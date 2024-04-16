@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import {Component, OnInit} from '@angular/core';
+import {TranslateModule} from '@ngx-translate/core';
 import {
   ChatClientService,
   ChannelService,
@@ -7,21 +7,28 @@ import {
   StreamAutocompleteTextareaModule,
   StreamChatModule,
 } from 'stream-chat-angular';
-import {ChatGptService} from "./chatGptService";
+import {ChatService} from "./chatService";
+import {HttpClientModule} from "@angular/common/http";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [TranslateModule, StreamAutocompleteTextareaModule, StreamChatModule],
+  imports: [CommonModule,
+    TranslateModule,
+    StreamAutocompleteTextareaModule,
+    HttpClientModule,
+    StreamChatModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  providers: [ChatService]
 })
 export class AppComponent implements OnInit {
   constructor(
     private chatService: ChatClientService,
     private channelService: ChannelService,
     private streamI18nService: StreamI18nService,
-    private chatGptService: ChatGptService
+    private beChatService: ChatService
   ) {
     const apiKey = 'h5y3ytpvzcyn';
     const userId = 'crimson-hat-9';
@@ -41,20 +48,19 @@ export class AppComponent implements OnInit {
     // Update the channel name after creation
     await channel.update({
       image: 'https://media.cna.al/cna.al/wp-content/uploads/2019/07/-800-0-ngjela-1024x7362-e1562847667765.jpg',
-      name: 'ChatBot Datawiz' });
+      name: 'ChatBot Datawiz'
+    });
 
     this.channelService.init({
       type: 'messaging',
-      id: { $eq: 'talking-about-angular' },
+      id: {$eq: 'talking-about-angular'},
     });
     channel.on('message.new', event => {
       console.log('New message:', event.message?.text);
-      this.chatGptService.sendMessage(event.message?.text ?? '')
+      this.beChatService.getResponse(event.message?.text ?? '').subscribe(res => {
+        console.log(res)
+      })
     });
-
-  }
-
-  test($event: MouseEvent) {
 
   }
 }

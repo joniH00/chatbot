@@ -1,12 +1,13 @@
 // chat.service.ts
 import { Injectable } from '@angular/core';
-import {StreamChatModule as StreamChatService } from 'stream-chat-angular';
+import {HttpClient} from "@angular/common/http";
 
+const API_URL = 'http://localhost:5291';
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
-  constructor(private streamChatService: StreamChatService) {}
+  constructor(private http: HttpClient) {}
 
   async sendMessage(channel: any, message: string): Promise<void> {
     try {
@@ -16,5 +17,9 @@ export class ChatService {
     } catch (error) {
       console.error('Error sending message:', error);
     }
+  }
+
+  getResponse(message: string){
+    return this.http.get<any>(`${API_URL}/${message}`)
   }
 }
