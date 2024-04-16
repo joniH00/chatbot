@@ -40,7 +40,7 @@ export class AppComponent implements OnInit {
 
     // Update the channel name after creation
     await channel.update({
-      image: 'https://media.cna.al/cna.al/wp-content/uploads/2019/07/-800-0-ngjela-1024x7362-e1562847667765.jpg',
+      image: 'https://i.pinimg.com/564x/4b/28/03/4b2803d78874a7008c39c2643b66a313.jpg',
       name: 'ChatBot Datawiz' });
 
     this.channelService.init({

@@ -10,8 +10,8 @@ export class ChatGptService {
 
   constructor() {
     this.openai = new OpenAI({
-      apiKey: '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',
-      dangerouslyAllowBrowser: true// Assume the API Key is stored securely in the environment settings
+      apiKey: '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',// Assume the API Key is stored securely in the environment settings
+      dangerouslyAllowBrowser: true
     });
   }
 
