@@ -6,11 +6,6 @@
   <stream-channel>
     <stream-channel-header></stream-channel-header>
     <stream-message-list>
-      <ng-container *ngFor="let message of messages">
-        <!-- Check message type (user or bot) and apply appropriate styles -->
-        <div *ngIf="message.type === 'user'" class="user-message">{{ message.text }}</div>
-        <div  >{{ message.text | json }}</div>
-      </ng-container>
     </stream-message-list>
     <stream-notification-list></stream-notification-list>
     <stream-message-input></stream-message-input>
