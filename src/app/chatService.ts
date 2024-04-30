@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {MessageDto} from "./dto/message.dto";
+import {ConfigurationRequestDto} from "./dto/configuration.request.dto";
 
 const API_URL = 'http://localhost:5291/api';
 @Injectable({
@@ -24,8 +25,19 @@ export class ChatService {
     return this.http.get<any>(`${API_URL}/${message}`)
   }
 
-  initializeChat(){
-    return this.http.get<any>(`${API_URL}/initialize-chat`)
+  initializeChat(configReq: ConfigurationRequestDto){
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.post<any>(`${API_URL}/initialize-chat`, configReq, {headers})
+  }
+
+  deleteChat(configReq: ConfigurationRequestDto){
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.post<any>(`${API_URL}/delete-chat`, configReq, {headers})
+  }
+
+  getFirstMessage(message: MessageDto){
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.post<any>(`${API_URL}/start-chat`, message, {headers})
   }
 
   messageManagement(message: MessageDto){

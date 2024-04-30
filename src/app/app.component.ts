@@ -1,4 +1,12 @@
-import {AfterContentInit, AfterViewInit, Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {
+  AfterContentInit,
+  AfterViewInit,
+  Component,
+  HostListener,
+  OnChanges,
+  OnInit,
+  SimpleChanges
+} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {
   ChatClientService,
@@ -13,6 +21,8 @@ import {CommonModule} from "@angular/common";
 import {ConfigurationDto} from "./dto/configuration.dto";
 import {MessageDto} from "./dto/message.dto";
 import {Channel} from "stream-chat";
+import {ConfigurationRequestDto} from "./dto/configuration.request.dto";
+import {parseFromJson, parseToJson} from "./utils/parse.utils";
 
 
 @Component({
@@ -27,7 +37,7 @@ import {Channel} from "stream-chat";
   styleUrls: ['./app.component.scss'],
   providers: [ChatService]
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit, AfterViewInit, AfterContentInit{
   messages: any[] = [];
   configurationData!: ConfigurationDto;
   private continueEvent!: Channel<DefaultStreamChatGenerics>;
@@ -45,16 +55,40 @@ export class AppComponent implements OnInit{
     this.processedMessages = new Set();
   }
 
+  ngAfterContentInit(): void {
+
+    }
+
+  ngAfterViewInit(): void {
+
+    }
+
   async ngOnInit() {
     this.messageService.displayAs = 'html';
     await this.chatinitialize();
   }
 
   async chatinitialize() {
-    this.service.initializeChat().subscribe(async (res) => {
+    let configReq;
+    let hasChannelData = false;
+    const jsonString = sessionStorage.getItem('channel_data');
+    if (jsonString === null) {
+      configReq = {userId: null, channelId: null} as ConfigurationRequestDto;
+      hasChannelData = false
+    }else {
+      hasChannelData = true
+      configReq = parseFromJson(jsonString)
+    }
+    this.service.initializeChat(configReq).subscribe(async (res) => {
       await this.chatService.init(res.apiKey, res.userId, res.userToken);
       this.streamI18nService.setTranslation();
-      this.configurationData = res;
+      if (!hasChannelData){
+        const configReq = {
+          userId: res.userId,
+          channelId: res.channelId
+        } as ConfigurationRequestDto
+        sessionStorage.setItem('channel_data', parseToJson(configReq))
+      }this.configurationData = res;
       const channel = this.chatService.chatClient.channel(res.chatType, res.channelId, {
         image: 'https://i.pinimg.com/564x/4b/28/03/4b2803d78874a7008c39c2643b66a313.jpg',
         name: 'ChatBot Datawiz',
@@ -66,6 +100,13 @@ export class AppComponent implements OnInit{
         id: {$eq: res.channelId},
       });
       channel.on('message.new', (event: any) => this.handleNewMessage(event, channel));
+      if (!hasChannelData){
+        const messagebody = this.createBodyReq('firstMessage', this.configurationData.chatType, this.configurationData.userId,
+          this.configurationData.channelId);
+        this.service.getFirstMessage(messagebody).subscribe(res => {
+          console.log(123, res)
+        })
+      }
     })
   }
 
@@ -85,10 +126,10 @@ export class AppComponent implements OnInit{
     }
   }
 
-
   processMessage(event: any) {
     const userId = event.user?.id ?? '';
     console.log(userId);
+    console.log(event);
     if (userId === this.configurationData.userId) {
       const userMessage = event.message?.text ?? '';
       const channelType = event.channel_type ?? '';
@@ -115,5 +156,15 @@ export class AppComponent implements OnInit{
       userId: userId,
       channelId: channelId
     } as MessageDto
+  }
+  @HostListener('window:beforeunload', ['$event'])
+  onWindowClose(event: any) {
+    const jsonString = sessionStorage.getItem('channel_data');
+    if (jsonString !== null)
+      this.service.deleteChat(parseFromJson(jsonString)).subscribe(res => {
+        console.log(123)
+      })
+    event.preventDefault();
+    event.returnValue = false;
   }
 }
