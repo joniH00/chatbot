@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Hospital</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure the body takes at least the height of the viewport */
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+        }
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .content {
+            flex: 1; /* Fill remaining vertical space */
+            padding: 20px;
+            position: relative;
+        }
+        iframe {
+            display: none;
+            width: 100%;
+            height: 400px;
+            border: none;
+            margin-top: 20px;
+        }
+        #chatButton {
+            background: none;
+            border: none; /* Remove button border */
+            cursor: pointer;
+            outline: none;
+            margin: 10px 20px; /* Add margins */
+            align-self: flex-end; /* Push to the right end of the page */
+        }
+        #chatButton img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: block;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Our Hospital</h1>
+    </header>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Services</a>
+        <a href="#">About Us</a>
+        <a href="#">Contact</a>
+    </nav>
+    <div class="content">
+        <h2>About Our Hospital</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quis est a arcu elementum commodo. Duis gravida dui sed purus fringilla, nec fermentum nunc consectetur. Nam vitae tortor vel leo auctor cursus. Sed eleifend libero nec risus luctus, at dapibus justo posuere. Quisque tincidunt dui nec purus laoreet, in aliquet risus finibus. Cras commodo ipsum in quam consectetur, in malesuada metus finibus. Nulla ut mi nisl.</p>
+        <h2>Our Services</h2>
+        <ul>
+            <li>Emergency Care</li>
+            <li>General Checkups</li>
+            <li>Specialized Treatments</li>
+            <li>Diagnostic Services</li>
+        </ul>
+        <h2>Contact Us</h2>
+        <p>Address: 123 Hospital Street, City, Country</p>
+        <p>Phone: +123456789</p>
+        <p>Email: info@hospital.com</p>
+
+        <button id="chatButton" onclick="toggleChat()">
+            <img src="https://i.pinimg.com/564x/4b/28/03/4b2803d78874a7008c39c2643b66a313.jpg" alt="Chat Icon">
+        </button>
+
+        <!-- Chatbot iframe -->
+        <iframe id="chatIframe" src="http://localhost:4200"></iframe>
+    </div>
+    <footer>
+        <p>&copy; 2024 Our Hospital. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function toggleChat() {
+            var iframe = document.getElementById('chatIframe');
+            iframe.style.display = (iframe.style.display == 'none') ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
