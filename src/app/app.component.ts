@@ -3,7 +3,7 @@ import {
   AfterViewInit,
   Component,
   HostListener,
-  OnChanges,
+  OnChanges, OnDestroy,
   OnInit,
   SimpleChanges
 } from '@angular/core';
@@ -23,6 +23,7 @@ import {MessageDto} from "./dto/message.dto";
 import {Channel} from "stream-chat";
 import {ConfigurationRequestDto} from "./dto/configuration.request.dto";
 import {parseFromJson, parseToJson} from "./utils/parse.utils";
+import {NavigationEnd, NavigationStart, Router, RouterEvent} from "@angular/router";
 
 
 @Component({
@@ -37,31 +38,25 @@ import {parseFromJson, parseToJson} from "./utils/parse.utils";
   styleUrls: ['./app.component.scss'],
   providers: [ChatService]
 })
-export class AppComponent implements OnInit, AfterViewInit, AfterContentInit{
+export class AppComponent implements OnInit{
   messages: any[] = [];
   configurationData!: ConfigurationDto;
   private continueEvent!: Channel<DefaultStreamChatGenerics>;
   private debounceTimer?: ReturnType<typeof setTimeout>;
   private lastMessageId!: string;
   private processedMessages: Set<string>;
+  private isRefreshing!: boolean;
 
   constructor(
     private chatService: ChatClientService,
     private channelService: ChannelService,
     private streamI18nService: StreamI18nService,
     private service: ChatService,
+    private router: Router,
     public messageService: MessageService
   ) {
     this.processedMessages = new Set();
   }
-
-  ngAfterContentInit(): void {
-
-    }
-
-  ngAfterViewInit(): void {
-
-    }
 
   async ngOnInit() {
     this.messageService.displayAs = 'html';
@@ -136,7 +131,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit{
       const channelId = event.channel_id ?? '';
       const messageId = event.message?.id ?? '';
 
-      // Prevent processing the same message multiple times
       if (this.lastMessageId === messageId) return;
       this.lastMessageId = messageId;
 
@@ -157,14 +151,14 @@ export class AppComponent implements OnInit, AfterViewInit, AfterContentInit{
       channelId: channelId
     } as MessageDto
   }
-  @HostListener('window:beforeunload', ['$event'])
+  @HostListener('window:unload', ['$event'])
   onWindowClose(event: any) {
+    console.log(event)
     const jsonString = sessionStorage.getItem('channel_data');
     if (jsonString !== null)
-      this.service.deleteChat(parseFromJson(jsonString)).subscribe(res => {
-        console.log(123)
-      })
-    event.preventDefault();
-    event.returnValue = false;
+    {
+      this.service.deleteChat(parseFromJson(jsonString)).subscribe()
+    }
+    return event.returnValue = 'You may lose your changes';
   }
 }
