@@ -61,6 +61,12 @@ export class AppComponent implements OnInit{
   async ngOnInit() {
     this.messageService.displayAs = 'html';
     await this.chatinitialize();
+    window.addEventListener("dragover", e => {
+      e && e.preventDefault();
+    }, false);
+    window.addEventListener("drop", e => {
+      e && e.preventDefault();
+    }, false);
   }
 
   async chatinitialize() {
@@ -151,7 +157,30 @@ export class AppComponent implements OnInit{
       channelId: channelId
     } as MessageDto
   }
-  @HostListener('window:unload', ['$event'])
+  onFileDrop(event: DragEvent) {
+    event.preventDefault();
+    if (event.dataTransfer?.files) {
+      const files = event.dataTransfer.files;
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        console.log('Dropped file', file.name);
+        // Here you can handle the file, e.g., upload it to a server or display its name
+        this.messages.push({ type: 'file', text: file.name }); // Example to show file name in messages
+      }
+    }
+  }
+
+  onDragOver(event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
+  onDragLeave(event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
+  /*@HostListener('window:unload', ['$event'])
   onWindowClose(event: any) {
     console.log(event)
     const jsonString = sessionStorage.getItem('channel_data');
@@ -160,5 +189,5 @@ export class AppComponent implements OnInit{
       this.service.deleteChat(parseFromJson(jsonString)).subscribe()
     }
     return event.returnValue = 'You may lose your changes';
-  }
+  }*/
 }
