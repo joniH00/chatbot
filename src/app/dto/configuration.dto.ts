@@ -1,3 +1,4 @@
+//DTO of configuration data
 export class ConfigurationDto{
   apiKey!: string;
   channelId!: string;

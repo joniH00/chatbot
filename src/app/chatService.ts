@@ -24,7 +24,7 @@ export class ChatService {
   getResponse(message: string){
     return this.http.get<any>(`${API_URL}/${message}`)
   }
-
+// Function to initialize chat with configuration data
   initializeChat(configReq: ConfigurationRequestDto){
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.post<any>(`${API_URL}/initialize-chat`, configReq, {headers})
@@ -34,12 +34,12 @@ export class ChatService {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.post<any>(`${API_URL}/delete-chat`, configReq, {headers})
   }
-
+  // Function to get the first message in a chat session
   getFirstMessage(message: MessageDto){
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.post<any>(`${API_URL}/start-chat`, message, {headers})
   }
-
+  // Function to manage messages in the chat
   messageManagement(message: MessageDto){
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.post<any>(`${API_URL}/Message-Management`, message, {headers})
