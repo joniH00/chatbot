@@ -33,6 +33,11 @@ stream-channel {
   flex: 1;
 }
 
+.str-chat__message-input .str-chat__message-input-inner .str-chat__file-input-container {
+  display: none;
+}
+
+
 stream-thread {
   flex: 0 0 45%;
 }
