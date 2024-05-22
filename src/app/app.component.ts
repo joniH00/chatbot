@@ -74,7 +74,7 @@ export class AppComponent implements OnInit{
     let hasChannelData = false;
     const jsonString = sessionStorage.getItem('channel_data');
     if (jsonString === null) {
-      configReq = {userId: null, channelId: null} as ConfigurationRequestDto;
+      configReq = {userId: null, channelId: null, assistantThread: null} as ConfigurationRequestDto;
       hasChannelData = false
     }else {
       hasChannelData = true
@@ -86,7 +86,8 @@ export class AppComponent implements OnInit{
       if (!hasChannelData){
         const configReq = {
           userId: res.userId,
-          channelId: res.channelId
+          channelId: res.channelId,
+          assistantThread: res.assistantThread,
         } as ConfigurationRequestDto
         sessionStorage.setItem('channel_data', parseToJson(configReq))
       }this.configurationData = res;
@@ -103,7 +104,7 @@ export class AppComponent implements OnInit{
       channel.on('message.new', (event: any) => this.handleNewMessage(event, channel));
       if (!hasChannelData){
         const messagebody = this.createBodyReq('firstMessage', this.configurationData.chatType, this.configurationData.userId,
-          this.configurationData.channelId);
+          this.configurationData.channelId, this.configurationData.assistantThread);
         this.service.getFirstMessage(messagebody).subscribe(res => {
           console.log(123, res)
         })
@@ -140,7 +141,7 @@ export class AppComponent implements OnInit{
       if (this.lastMessageId === messageId) return;
       this.lastMessageId = messageId;
 
-      const messageDto = this.createBodyReq(userMessage, channelType, userId, channelId);
+      const messageDto = this.createBodyReq(userMessage, channelType, userId, channelId, this.configurationData.assistantThread);
       if (userId === this.configurationData.userId)
         this.service.messageManagement(messageDto).subscribe();
 
@@ -149,12 +150,13 @@ export class AppComponent implements OnInit{
     }
   }
 
-  createBodyReq(text: string, type: string, userId: string, channelId: string, ) {
+  createBodyReq(text: string, type: string, userId: string, channelId: string, assistantThread: string) {
     return {
       text: text,
       type: type,
       userId: userId,
-      channelId: channelId
+      channelId: channelId,
+      assistantThread: assistantThread,
     } as MessageDto
   }
   onFileDrop(event: DragEvent) {

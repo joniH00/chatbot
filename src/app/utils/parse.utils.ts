@@ -8,7 +8,7 @@ export const parseFromJson = (jsonString: string): any => {
 
   const configDto: ConfigurationRequestDto = new ConfigurationRequestDto();
   configDto.channelId = parsedObject.channelId;
-  configDto.userId = parsedObject.userId;
+  configDto.assistantThread = parsedObject.assistantThread;
 
   return configDto;
 }

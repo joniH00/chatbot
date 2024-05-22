@@ -4,4 +4,5 @@ export class ConfigurationDto{
   userId!: string;
   chatType!: string;
   userToken!: string;
+  assistantThread!: string;
 }

@@ -3,4 +3,5 @@ export class MessageDto{
   userId!: string;
   channelId!: string;
   type!: string;
+  assistantThread!: string;
 }
