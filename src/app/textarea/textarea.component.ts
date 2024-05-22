@@ -25,7 +25,7 @@ export class TextareaComponent implements TextareaInterface {
   @Output() readonly send = new EventEmitter<void>();
 
   constructor() {}
-
+//Bases that might be used in later implementations for markup
   inputChanged(value: string) {
     this.valueChange.emit(value);
   }

@@ -1,5 +1,5 @@
 @import 'stream-chat-angular/src/assets/styles/v2/css/index.css';
-
+/*here are accessed the classes of getstream io and the styling of demo.html*/
 html, body {
   height: 100%;
   margin: 0;
@@ -32,6 +32,11 @@ stream-channel-list {
 stream-channel {
   flex: 1;
 }
+
+.str-chat__message-input .str-chat__message-input-inner .str-chat__file-input-container {
+  display: none;
+}
+
 
 stream-thread {
   flex: 0 0 45%;
